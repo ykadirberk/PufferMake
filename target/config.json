@@ -1,0 +1,24 @@
+{
+    "source_file_filters": [
+        "c",
+        "cc",
+        "cpp",
+        "CPP",
+        "c++",
+        "cp",
+        "cxx"
+    ],
+    "header_file_filters": [
+        "h",
+        "hh",
+        "hpp",
+        "H"
+    ],
+    "object_file_filters": [
+        "o"
+    ],
+    "preprocessed_file_filters": [
+        "i",
+        "ii"
+    ]
+}

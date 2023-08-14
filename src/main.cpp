@@ -40,10 +40,6 @@ int main (int argc, char* argv[]) {
         if (path_without_cwd.at(0) == '.') {
             continue;
         }
-        // auto cpppos = current_path.find(L"cpp");
-        // if (cpppos != std::wstring::npos) {
-        //     std::cout << current_path.length() << ", " << cpppos << std::endl;
-        // }
 
         source_files.TryAddFile(current_path);
         header_files.TryAddFile(current_path);
@@ -64,10 +60,17 @@ int main (int argc, char* argv[]) {
     std::wcout << "\nPreprocessed files:" << '\n';
     preprocessed_files.PrintFiles();
 
-
     return 0;
 }
 
+/* 
+run commands:
+
+g++ -c src/main.cpp src/FileList/FileList.cpp src/nlohmann/json.hpp src/Configuration/Configuration.cpp -std=c++20 -Os
+g++ main.o FileList.o json.o Configuration.o -o ./target/app
+./target/app
+
+*/
 
 // C++ source files: .c .cc .cpp .CPP .c++ .cp .cxx
 // C++ header files: .h .hh .hpp .H
