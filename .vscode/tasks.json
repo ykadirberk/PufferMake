@@ -1,15 +1,76 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-	  {
-		"label": "Run tests",
-		"type": "shell",
-		"command": "./scripts/test.sh",
-		"group": "test",
-		"presentation": {
-		  "reveal": "always",
-		  "panel": "new"
+		{
+            "label": "Compile",
+            "type": "shell",
+            "command": "g++ -c ../src/main.cpp ../src/FileList/FileList.cpp ../src/nlohmann/json.hpp ../src/Configuration/Configuration.cpp -std=c++20 -Os",
+			"options": {
+				"cwd": "${workspaceFolder}/objects"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+        {
+            "label": "Link",
+            "type": "shell",
+			"command": "g++ objects/main.o objects/FileList.o objects/json.o objects/Configuration.o -o ./target/app -lstdc++fs",
+            "problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "command": "cd target \n .\\app.exe",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+		{
+			"label": "Build",
+			"type": "shell",
+			"dependsOrder": "sequence",
+			"dependsOn":["Compile", "Link"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Build & Run",
+			"type": "shell",
+			"dependsOrder": "sequence",
+			"dependsOn": ["Compile", "Link", "Run"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
 		}
-	  }
 	]
-  }
+}
