@@ -28,8 +28,9 @@ int main (int argc, char* argv[]) {
     preprocessed_files.AddFilterExtension(L"i");
     preprocessed_files.AddFilterExtension(L"ii");
     
-    fs::path cwd = "./";
-    fs::current_path(cwd);
+    // fs::path cwd = "./";
+    // fs::current_path(cwd);
+    auto cwd = std::filesystem::current_path();
  
     for (auto const& dir_entry : fs::recursive_directory_iterator(cwd)) {
         if (dir_entry.is_directory()) {
@@ -67,7 +68,7 @@ int main (int argc, char* argv[]) {
 run commands:
 
 g++ -c src/main.cpp src/FileList/FileList.cpp src/nlohmann/json.hpp src/Configuration/Configuration.cpp -std=c++20 -Os
-g++ main.o FileList.o json.o Configuration.o -o ./target/app
+g++ main.o FileList.o json.o Configuration.o -o ./target/app -lstdc++fs
 ./target/app
 
 */
@@ -109,7 +110,7 @@ g++ main.o FileList.o json.o Configuration.o -o ./target/app
 // -O2 :         | reduces+       |           | increases    | increases+      | for code size and execution time ++
 // -O3 :         | reduces++      |           | increases    | increases+++    | for code size and execution time ++ ++
 // -Os :         |                | reduces+  |              | increases+      | for code size
-// -Ofast :      | reduces++      |           | increases    | increases+++    | same as -O3 with fast non-accurate math
+// -Ofast :      | reduces++      |           | increases    | increases+++    | same as -O3 with fast non-accurate math (aggressive speed optimization)
 // --------------------------------------------------------------------------- |
 // -Og : optimize for debugging experience
 // -Oz : aggressive optimization for size rather than speed.
