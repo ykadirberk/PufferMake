@@ -14,6 +14,8 @@ namespace PufferMake {
 
             void TryAddFile(std::wstring_view file_path);
 
+            std::vector<std::wstring> RetrieveFileList();
+
             void PrintFiles();
             
         private:

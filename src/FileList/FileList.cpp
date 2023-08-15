@@ -29,6 +29,10 @@ void PufferMake::FileList::TryAddFile(std::wstring_view file_path) {
     }
 }
 
+std::vector<std::wstring> PufferMake::FileList::RetrieveFileList() {
+    return m_file_paths;
+}
+
 void PufferMake::FileList::PrintFiles() {
     for (auto path : m_file_paths) {
         std::wcout << path << '\n';

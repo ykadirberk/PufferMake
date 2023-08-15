@@ -1,6 +1,9 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <unistd.h>
+#include <sstream>
+#include <fstream>
 
 #include "FileList/FileList.h"
 namespace fs = std::filesystem;
@@ -15,21 +18,6 @@ int main (int argc, char* argv[]) {
     source_files.AddFilterExtension(L"cp");
     source_files.AddFilterExtension(L"cxx");
 
-    PufferMake::FileList header_files;
-    header_files.AddFilterExtension(L"h");
-    header_files.AddFilterExtension(L"hh");
-    header_files.AddFilterExtension(L"hpp");
-    header_files.AddFilterExtension(L"H");
-
-    PufferMake::FileList object_files;
-    object_files.AddFilterExtension(L"o");
-
-    PufferMake::FileList preprocessed_files;
-    preprocessed_files.AddFilterExtension(L"i");
-    preprocessed_files.AddFilterExtension(L"ii");
-    
-    // fs::path cwd = "./";
-    // fs::current_path(cwd);
     auto cwd = std::filesystem::current_path();
  
     for (auto const& dir_entry : fs::recursive_directory_iterator(cwd)) {
@@ -37,30 +25,12 @@ int main (int argc, char* argv[]) {
             continue;
         }
         auto current_path = dir_entry.path().wstring();
-        auto path_without_cwd = current_path.substr(2);
-        if (path_without_cwd.at(0) == '.') {
-            continue;
-        }
-
         source_files.TryAddFile(current_path);
-        header_files.TryAddFile(current_path);
-        object_files.TryAddFile(current_path);
-        preprocessed_files.TryAddFile(current_path);
-        
     }
 
-    std::wcout << "\nSource files:" << '\n';
-    source_files.PrintFiles();
-
-    std::wcout << "\nHeader files:" << '\n';
-    header_files.PrintFiles();
-
-    std::wcout << "\nObject files:" << '\n';
-    object_files.PrintFiles();
-
-    std::wcout << "\nPreprocessed files:" << '\n';
-    preprocessed_files.PrintFiles();
-
+    //std::wcout << "\nSource files:" << '\n';
+    //source_files.PrintFiles();
+    
     return 0;
 }
 

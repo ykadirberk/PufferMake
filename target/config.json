@@ -20,5 +20,11 @@
     "preprocessed_file_filters": [
         "i",
         "ii"
+    ],
+    "staticlib_file_filters": [
+        "a"
+    ],
+    "dynamiclib_file_filters": [
+        "so"
     ]
 }
