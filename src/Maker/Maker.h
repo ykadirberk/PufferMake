@@ -1,4 +1,9 @@
 #pragma once
+#include <unistd.h>
+#include <stdlib.h>
+#include <fstream>
+#include <string>
+#include <future>
 #include "../Configuration/Configuration.h"
 #include "../FileList/FileList.h"
 
@@ -26,7 +31,10 @@ namespace PufferMake {
             FileList m_staticlib_files;
             FileList m_dynamiclib_files;
 
-
             void LoadFilters(std::vector<std::string>& filters, FileList& files);
+            std::string RunProcess(const char* command);
+            std::string GetFileNameWithoutExtension(std::string path);
+
+            void PreProcessFile(std::wstring filename);
     };
 }

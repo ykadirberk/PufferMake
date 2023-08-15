@@ -31,7 +31,6 @@ void PufferMake::Maker::Initialize() {
     LoadFilters(staticlib_file_filters,     m_staticlib_files);
     LoadFilters(dynamiclib_file_filters,    m_dynamiclib_files);
 
-
 }
 
 void PufferMake::Maker::LoadFiles() {
@@ -54,6 +53,26 @@ void PufferMake::Maker::LoadFiles() {
 }
 
 void PufferMake::Maker::PreProcess() {
+    bool preprocessed_current = std::filesystem::exists("./preprocessed");
+    if (!preprocessed_current) {
+        std::filesystem::create_directory("preprocessed");
+    }
+    std::vector<std::future<void>> futures;
+    auto temp_file_name_list = m_source_files.RetrieveFileList();
+    for (auto name : temp_file_name_list) {
+        futures.push_back(
+            std::async(
+                std::launch::async, 
+                &PufferMake::Maker::PreProcessFile, 
+                this, 
+                name
+            )
+        );
+    }
+
+    for (auto& f : futures) {
+        f.wait();
+    }
 
 }
 
@@ -66,15 +85,17 @@ void PufferMake::Maker::Link() {
 }
 
 void PufferMake::Maker::Run() {
-
+    std::system("./target/app &");
 }
 
 void PufferMake::Maker::Build() {
-
+    Compile();
+    Link();
 }
 
 void PufferMake::Maker::BuildAndRun() {
-
+    Build();
+    Run();
 }
 
 void PufferMake::Maker::LoadFilters(std::vector<std::string>& filters, FileList& files) {
@@ -82,4 +103,38 @@ void PufferMake::Maker::LoadFilters(std::vector<std::string>& filters, FileList&
         const char* filter_str = filter.c_str();
         files.AddFilterExtension(std::wstring(filter_str,filter_str + filter.length()));
     }
+}
+
+std::string PufferMake::Maker::RunProcess(const char* command) {
+    std::array<char, 255> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+std::string PufferMake::Maker::GetFileNameWithoutExtension(std::string path) {
+    auto filenamepos = path.find_last_of("/");
+    std::string name_wext = path.substr(filenamepos + 1);
+    auto extpos = name_wext.find(".");
+    return name_wext.substr(0, extpos);
+}
+
+void PufferMake::Maker::PreProcessFile(std::wstring current_name) {
+    std::string converted_str(current_name.begin(), current_name.end());
+
+    std::stringstream command;
+    command << "g++ -E " << converted_str;
+        
+    std::string result = RunProcess(command.str().data());
+    std::string filename = "preprocessed/";
+    filename += GetFileNameWithoutExtension(converted_str);
+    filename += ".i";
+    std::ofstream outputfile(filename, std::ios::trunc);
+    outputfile << result << std::endl;
 }
