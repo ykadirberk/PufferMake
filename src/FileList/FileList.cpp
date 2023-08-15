@@ -14,15 +14,17 @@ void PufferMake::FileList::AddFilterExtension(std::wstring_view ext) {
 }
 
 void PufferMake::FileList::TryAddFile(std::wstring_view file_path) {
-    for (const auto& filter : m_filters ) {
+    for (auto filter : m_filters ) {
         auto file_path_lengh = file_path.length();
         auto filter_length = filter.length();
-        auto pos = file_path.find(filter);
+        auto pos = file_path.find(L".");
         if (pos == std::wstring::npos) {
             continue;
         }
-        if (pos == file_path_lengh - filter_length) {
+        std::wstring extension = std::wstring(file_path.substr(pos + 1));
+        if (extension == filter) {
             m_file_paths.push_back(std::wstring(file_path));
+            break;
         }
     }
 }
