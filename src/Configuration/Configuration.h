@@ -17,12 +17,15 @@ namespace PufferMake {
             std::vector<std::string> HeaderFileFilters();
             std::vector<std::string> ObjectFileFilters();
             std::vector<std::string> PreprocessedFileFilters();
+            std::vector<std::string> StaticLibFileFilters();
+            std::vector<std::string> DynamicLibFileFilters();
 
 
         private:
             nlohmann::json json_object;
 
             void GenerateConfig();
+            void VSCodeIntegration();
     };
 
 }
