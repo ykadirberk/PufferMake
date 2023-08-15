@@ -24,12 +24,12 @@ void PufferMake::Maker::Initialize() {
     auto staticlib_file_filters = configuration.HeaderFileFilters();
     auto dynamiclib_file_filters = configuration.HeaderFileFilters();
 
-    LoadFilters(source_file_filters, m_source_files);
-    LoadFilters(header_file_filters, m_header_files);
-    LoadFilters(object_file_filters, m_object_files);
-    LoadFilters(preprocessed_file_filters, m_preprocessed_files);
-    LoadFilters(staticlib_file_filters, m_staticlib_files);
-    LoadFilters(dynamiclib_file_filters, m_dynamiclib_files);
+    LoadFilters(source_file_filters,        m_source_files);
+    LoadFilters(header_file_filters,        m_header_files);
+    LoadFilters(object_file_filters,        m_object_files);
+    LoadFilters(preprocessed_file_filters,  m_preprocessed_files);
+    LoadFilters(staticlib_file_filters,     m_staticlib_files);
+    LoadFilters(dynamiclib_file_filters,    m_dynamiclib_files);
 
 
 }
@@ -43,18 +43,13 @@ void PufferMake::Maker::LoadFiles() {
         }
 
         auto current_path = dir_entry.path().wstring();
-        auto path_without_cwd = current_path.substr(2);
 
-        if (path_without_cwd.at(0) == '.') {
-            continue;
-        }
-
-        m_source_files.TryAddFile(current_path);
-        m_header_files.TryAddFile(current_path);
-        m_object_files.TryAddFile(current_path);
-        m_preprocessed_files.TryAddFile(current_path);
-        m_staticlib_files.TryAddFile(current_path);
-        m_dynamiclib_files.TryAddFile(current_path);
+        m_source_files.         TryAddFile(current_path);
+        m_header_files.         TryAddFile(current_path);
+        m_object_files.         TryAddFile(current_path);
+        m_preprocessed_files.   TryAddFile(current_path);
+        m_staticlib_files.      TryAddFile(current_path);
+        m_dynamiclib_files.     TryAddFile(current_path);
     }
 }
 
