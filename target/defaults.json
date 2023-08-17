@@ -1,12 +1,6 @@
 {
-    "source_file_filters": [
-        "c",
-        "cc",
-        "cpp",
-        "CPP",
-        "c++",
-        "cp",
-        "cxx"
+    "dynamiclib_file_filters": [
+        "so"
     ],
     "header_file_filters": [
         "h",
@@ -21,10 +15,17 @@
         "i",
         "ii"
     ],
+    "source_file_filters": [
+        "c",
+        "cc",
+        "cpp",
+        "CPP",
+        "c++",
+        "cp",
+        "cxx"
+    ],
     "staticlib_file_filters": [
         "a"
     ],
-    "dynamiclib_file_filters": [
-        "so"
-    ]
+    "vs-code_integration": true
 }
