@@ -1,6 +1,6 @@
 #include "Configuration.h"
 
-PufferMake::Configuration::Configuration() : json_object() {
+PufferMake::Configuration::Configuration() : m_json_defaults(), m_json_build() {
 
 }
 
@@ -9,49 +9,100 @@ PufferMake::Configuration::~Configuration() {
 }
 
 void PufferMake::Configuration::Initialize() {
-    bool config_current = std::filesystem::exists("config.json");
+    bool defaults_current = std::filesystem::exists("defaults.json");
     
-    if (!config_current) {
-        GenerateConfig();
+    if (!defaults_current) {
+        GenerateDefaults();
     }
 
-    std::ifstream config("config.json");
-    config >> json_object;
-    auto vscode_integration = json_object["vs-code_integration"].get<bool>();
+    std::ifstream defaults("defaults.json");
+    defaults >> m_json_defaults;
+    auto vscode_integration = m_json_defaults["vs-code_integration"].get<bool>();
     if (vscode_integration) {
         VSCodeIntegration();
     }
+
+    bool build_current = std::filesystem::exists("build.json");
+
+    if (!build_current) {
+        GenerateDefaultBuildConfig();
+    }
+
+    std::ifstream build("build.json");
+    build >> m_json_build;
+
 }
 
 std::vector<std::string> PufferMake::Configuration::SourceFileFilters() {
-    return json_object["source_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["source_file_filters"].get<std::vector<std::string>>();
 }
 
 std::vector<std::string> PufferMake::Configuration::HeaderFileFilters() {
-    return json_object["header_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["header_file_filters"].get<std::vector<std::string>>();
 }
 
 std::vector<std::string> PufferMake::Configuration::ObjectFileFilters() {
-    return json_object["object_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["object_file_filters"].get<std::vector<std::string>>();
 }
 
 std::vector<std::string> PufferMake::Configuration::PreprocessedFileFilters() {
-    return json_object["preprocessed_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["preprocessed_file_filters"].get<std::vector<std::string>>();
 }
 
 std::vector<std::string> PufferMake::Configuration::StaticLibFileFilters() {
-    return json_object["staticlib_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["staticlib_file_filters"].get<std::vector<std::string>>();
 }
 
 std::vector<std::string> PufferMake::Configuration::DynamicLibFileFilters() {
-    return json_object["dynamiclib_file_filters"].get<std::vector<std::string>>();
+    return m_json_defaults["dynamiclib_file_filters"].get<std::vector<std::string>>();
 }
 
-void PufferMake::Configuration::GenerateConfig() {
-    nlohmann::json j;
-    j["vs-code_integration"] = true;
+std::string PufferMake::Configuration::BuildName() {
+    return m_json_build["build-name"].get<std::string>();
+}
+std::string PufferMake::Configuration::BuildType() {
+    return m_json_build["build-type"].get<std::string>();
+}
+std::string PufferMake::Configuration::CppVersion() {
+    return m_json_build["cpp-version"].get<std::string>();
+}
+std::string PufferMake::Configuration::Warnings() {
+    return m_json_build["warnings"].get<std::string>();
+}
+std::string PufferMake::Configuration::Optimization() {
+    if (!m_json_build["optimization"]["active"].get<bool>()) {
+        return std::string();
+    }
+    return m_json_build["optimization"]["mode"].get<std::string>();
+}
+std::string PufferMake::Configuration::Debug() {
+    if (!m_json_build["debug"]["active"].get<bool>()) {
+        return std::string();
+    }
+    return m_json_build["debug"]["mode"].get<std::string>();
+}
+std::vector<std::string> PufferMake::Configuration::IncludeDirectories() {
+    return m_json_build["include-directories"].get<std::vector<std::string>>();
+}
+PufferMake::__LinkingDetails PufferMake::Configuration::StaticLinking() {
+    return {
+        m_json_build["static-linking"]["active"].get<bool>(),
+        m_json_build["static-linking"]["directories"].get<std::vector<std::string>>(), 
+        m_json_build["static-linking"]["files"].get<std::vector<std::string>>()
+    };
+}
+PufferMake::__LinkingDetails PufferMake::Configuration:: DynamicLinking() {
+    return {
+        m_json_build["dynamic-linking"]["active"].get<bool>(),
+        m_json_build["dynamic-linking"]["directories"].get<std::vector<std::string>>(), 
+        m_json_build["dynamic-linking"]["files"].get<std::vector<std::string>>()
+    };
+}
 
-    j["source_file_filters"] = {
+void PufferMake::Configuration::GenerateDefaults() {
+    std::string js = R"({
+    "vs-code_integration": true,
+    "source_file_filters": [
         "c",
         "cc",
         "cpp",
@@ -59,34 +110,52 @@ void PufferMake::Configuration::GenerateConfig() {
         "c++",
         "cp",
         "cxx"
-    };
-
-    j["header_file_filters"] = {
+    ],
+    "header_file_filters": [
         "h",
         "hh",
         "hpp",
         "H"
-    };
-
-    j["object_file_filters"] = {
+    ],
+    "object_file_filters": [
         "o"
-    };
-
-    j["preprocessed_file_filters"] = {
+    ],
+    "preprocessed_file_filters": [
         "i",
         "ii"
-    };
-
-    j["staticlib_file_filters"] = {
+    ],
+    "staticlib_file_filters": [
         "a"
-    };
+    ],
+    "dynamiclib_file_filters": [
+        "so"
+    ]
+    "comments": {
+        "explanation": "# This comment section is to explain both build.json and defaults.json",
+        "defaults": "# You probably shouldn't change this file.",
+        "defaults-2": "# This file is needed for the make to work properly.",
+        "build.json": {
+            "build-name": "# Name of produced software, no need for extension.",
+            "build-type": "executable, shared, static",
+            "cpp-version": "# in form of c++20",
+            "warnings": "disabled, all, extra",
+            "optimization.active": "# true to enable",
+            "optimization.mode": "O0, O1, O2, O3, Os, Ofast, Og, Oz",
+            "debug.active": "# true to enable",
+            "debug.mode": "g0, g1, g, g3, ggdb, gdwarf",
+            "include-directories": "# list of include directories",
+            "static-linking.active": "# true to enable",
+            "static-linking.directories": "# list of static library directories",
+            "static-linking.files": "# list of library names",
+            "dynamic-linking.active": "# true to enable",
+            "dynamic-linking.directories": "# list of dynamic library directories",
+            "dynamic-linking.files": "# list of library names",
+        }
+    }
+})";
 
-    j["dynamiclib_file_filters"] = {
-        "so",
-    };
-
-    std::ofstream output("config.json");
-    output << std::setw(4) << j << std::endl;
+    std::ofstream output("defaults.json");
+    output << js << std::endl;
 }
 
 void PufferMake::Configuration::VSCodeIntegration() {
@@ -96,7 +165,7 @@ void PufferMake::Configuration::VSCodeIntegration() {
         bool tasks_current = std::filesystem::exists(".vscode/tasks.json");
         if (!tasks_current) {
             using namespace nlohmann::literals;
-            nlohmann::json js = R"({
+            std::string js = R"({
 	"version": "2.0.0",
 	"tasks": [
 	  	{
@@ -110,9 +179,40 @@ void PufferMake::Configuration::VSCodeIntegration() {
 			}
 	  	}
 	]
-})"_json;   
+})";   
             std::ofstream tasks(".vscode/tasks.json");
-            tasks << std::setw(4) << js << std::endl;
+            tasks << js << std::endl;
         }
     }
+}
+
+void PufferMake::Configuration::GenerateDefaultBuildConfig() {
+    nlohmann::json j;
+    std::string js = R"({
+    "build-name": "app",
+    "build-type": "executable",
+    "cpp-version": "c++20",
+    "warnings": "all",
+    "optimization": {
+        "active": true,
+        "mode": "Og"
+    },
+    "debug": {
+        "active": true,
+        "mode": "ggdb"
+    },
+    "include-directories": [],
+    "static-linking": {
+        "active": false,
+        "directories": [],
+        "files": []
+    },
+    "dynamic-linking": {
+        "active": false,
+        "directories": [],
+        "files": []
+    }
+})";
+    std::ofstream output("build.json", std::ios::trunc);
+    output << js << std::endl;
 }

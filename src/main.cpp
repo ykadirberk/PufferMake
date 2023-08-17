@@ -6,27 +6,43 @@
 #include <fstream>
 
 #include "FileList/FileList.h"
+#include "ParseCommand/ParseCommand.h"
+#include "Maker/Maker.h"
+
 namespace fs = std::filesystem;
 
 int main (int argc, char* argv[]) {
-    PufferMake::FileList source_files;
-    source_files.AddFilterExtension(L"c");
-    source_files.AddFilterExtension(L"cc");
-    source_files.AddFilterExtension(L"cpp");
-    source_files.AddFilterExtension(L"CPP");
-    source_files.AddFilterExtension(L"c++");
-    source_files.AddFilterExtension(L"cp");
-    source_files.AddFilterExtension(L"cxx");
 
-    auto cwd = std::filesystem::current_path();
- 
-    for (auto const& dir_entry : fs::recursive_directory_iterator(cwd)) {
-        if (dir_entry.is_directory()) {
-            continue;
-        }
-        auto current_path = dir_entry.path().wstring();
-        source_files.TryAddFile(current_path);
+    PufferMake::ParseCommand parser(argc, argv);
+    if (!parser.IsValid()) {
+        std::cout << "Error: " << parser.ErrorMessage() << std::endl;
+        return EXIT_FAILURE;
     }
+    std::string command = parser.GetCommand();
+
+    PufferMake::Maker maker;
+    maker.Initialize();
+    maker.LoadFiles();
+    maker.ExecuteInstruction(command);
+
+    // PufferMake::FileList source_files;
+    // source_files.AddFilterExtension(L"c");
+    // source_files.AddFilterExtension(L"cc");
+    // source_files.AddFilterExtension(L"cpp");
+    // source_files.AddFilterExtension(L"CPP");
+    // source_files.AddFilterExtension(L"c++");
+    // source_files.AddFilterExtension(L"cp");
+    // source_files.AddFilterExtension(L"cxx");
+
+    // auto cwd = std::filesystem::current_path();
+ 
+    // for (auto const& dir_entry : fs::recursive_directory_iterator(cwd)) {
+    //     if (dir_entry.is_directory()) {
+    //         continue;
+    //     }
+    //     auto current_path = dir_entry.path().wstring();
+    //     source_files.TryAddFile(current_path);
+    // }
 
     //std::wcout << "\nSource files:" << '\n';
     //source_files.PrintFiles();

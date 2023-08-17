@@ -6,6 +6,18 @@
 #include "../nlohmann/json.hpp"
 
 namespace PufferMake {
+    class __LinkingDetails {
+        public:
+            __LinkingDetails(
+                bool act,
+                std::vector<std::string> dir, 
+                std::vector<std::string> fil) :
+                    active(act), directories(dir), files(fil) {}
+            bool active;
+            std::vector<std::string> directories;
+            std::vector<std::string> files;
+    };
+
     class Configuration {
         public:
             Configuration();
@@ -20,12 +32,23 @@ namespace PufferMake {
             std::vector<std::string> StaticLibFileFilters();
             std::vector<std::string> DynamicLibFileFilters();
 
+            std::string BuildName();
+            std::string BuildType();
+            std::string CppVersion();
+            std::string Warnings();
+            std::string Optimization();
+            std::string Debug();
+            std::vector<std::string> IncludeDirectories();
+            __LinkingDetails StaticLinking();
+            __LinkingDetails DynamicLinking();
 
         private:
-            nlohmann::json json_object;
+            nlohmann::json m_json_defaults;
+            nlohmann::json m_json_build;
 
-            void GenerateConfig();
+            void GenerateDefaults();
             void VSCodeIntegration();
+            void GenerateDefaultBuildConfig();
     };
 
 }
