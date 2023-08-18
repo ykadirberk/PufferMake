@@ -129,7 +129,7 @@ void PufferMake::Configuration::GenerateDefaults() {
     ],
     "dynamiclib_file_filters": [
         "so"
-    ]
+    ],
     "comments": {
         "explanation": "# This comment section is to explain both build.json and defaults.json",
         "defaults": "# You probably shouldn't change this file.",
@@ -146,10 +146,10 @@ void PufferMake::Configuration::GenerateDefaults() {
             "include-directories": "# list of include directories",
             "static-linking.active": "# true to enable",
             "static-linking.directories": "# list of static library directories",
-            "static-linking.files": "# list of library names",
+            "static-linking.files": "# list of library file names",
             "dynamic-linking.active": "# true to enable",
             "dynamic-linking.directories": "# list of dynamic library directories",
-            "dynamic-linking.files": "# list of library names",
+            "dynamic-linking.files": "# list of library file names"
         }
     }
 })";
@@ -168,16 +168,113 @@ void PufferMake::Configuration::VSCodeIntegration() {
             std::string js = R"({
 	"version": "2.0.0",
 	"tasks": [
-	  	{
-			"label": "Run tests",
-			"type": "shell",
-			"command": "./scripts/test.sh",
-			"group": "test",
+		{
+            "label": "Compile",
+            "type": "shell",
+            "command": "./PufferMake compile",
 			"presentation": {
-		  		"reveal": "always",
-		  		"panel": "new"
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
 			}
-	  	}
+        },
+        {
+            "label": "Link Executable",
+            "type": "shell",
+			"command": "./PufferMake link-executable",
+            "problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+        {
+            "label": "Link Shared Library",
+            "type": "shell",
+			"command": "./PufferMake link-shared",
+            "problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+        {
+            "label": "Link Static Library",
+            "type": "shell",
+			"command": "./PufferMake link-static",
+            "problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "command": "./PufferMake run",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        },
+		{
+			"label": "Build",
+			"type": "shell",
+			"command": "./PufferMake build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "Build & Run",
+			"type": "shell",
+			"command": "./PufferMake build-run",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+        {
+            "label": "Generate Preprocessed",
+            "type": "shell",
+            "command": "./PufferMake preprocess",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			}
+        }
 	]
 })";   
             std::ofstream tasks(".vscode/tasks.json");
