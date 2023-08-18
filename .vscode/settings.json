@@ -87,6 +87,7 @@
         "xutility": "cpp",
         "condition_variable": "cpp",
         "future": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "set": "cpp"
     }
 }

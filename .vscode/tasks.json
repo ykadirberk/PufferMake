@@ -20,7 +20,7 @@
         {
             "label": "Link",
             "type": "shell",
-			"command": "g++ objects/main.o objects/FileList.o objects/Configuration.o objects/ParseCommand.o objects/Maker.o -o ./target/app -lstdc++fs",
+			"command": "g++ objects/main.o objects/FileList.o objects/Configuration.o objects/ParseCommand.o objects/Maker.o -o ./target/PufferMake",
             "problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -34,7 +34,7 @@
         {
             "label": "Run",
             "type": "shell",
-            "command": "./target/app",
+            "command": "./target/PufferMake",
 			"presentation": {
 				"echo": true,
 				"reveal": "always",
