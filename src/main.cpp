@@ -13,17 +13,24 @@ namespace fs = std::filesystem;
 
 int main (int argc, char* argv[]) {
 
+    PufferMake::Maker maker;
+    maker.Initialize();
+    maker.LoadFiles();
+
+    if (argc == 1) {
+        maker.Create();
+        return 0;
+    }
+
     PufferMake::ParseCommand parser(argc, argv);
     if (!parser.IsValid()) {
         std::cout << "Error: " << parser.ErrorMessage() << std::endl;
         return EXIT_FAILURE;
     }
     std::string command = parser.GetCommand();
-
-    PufferMake::Maker maker;
-    maker.Initialize();
-    maker.LoadFiles();
     maker.ExecuteInstruction(command);
+
+    // -lstdc++fs
 
     // PufferMake::FileList source_files;
     // source_files.AddFilterExtension(L"c");

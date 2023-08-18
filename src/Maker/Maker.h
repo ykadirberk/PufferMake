@@ -5,6 +5,7 @@
 #include <string_view>
 #include <string>
 #include <future>
+#include <set>
 #include "../Configuration/Configuration.h"
 #include "../FileList/FileList.h"
 #include "../Colour/Colour.h"
@@ -19,6 +20,8 @@ namespace PufferMake {
             void LoadFiles();
 
             void ExecuteInstruction(std::string_view instruction);
+
+            void Create();
 
             void PreProcess();
             void Compile();

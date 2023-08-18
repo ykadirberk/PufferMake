@@ -53,6 +53,9 @@ void PufferMake::Maker::LoadFiles() {
 
 void PufferMake::Maker::ExecuteInstruction(std::string_view instruction) {
     std::string inst(instruction);
+    if (inst == "create") {
+        this->Create();
+    }
     if (inst == "preprocess") {
         this->PreProcess();
     }
@@ -63,7 +66,10 @@ void PufferMake::Maker::ExecuteInstruction(std::string_view instruction) {
         this->LinkExecutable();
     }
     if (inst == "link-shared") {
-
+        this->LinkShared();
+    }
+    if (inst == "link-static") {
+        this->LinkStatic();
     }
     if (inst == "run") {
         this->Run();
@@ -76,9 +82,41 @@ void PufferMake::Maker::ExecuteInstruction(std::string_view instruction) {
     }
 }
 
+void PufferMake::Maker::Create() {
+    std::cout << COLOUR_CYAN_B
+        << "Creating executable application project..."
+        << COLOUR_RESET << std::endl;
+    bool src_current = std::filesystem::exists("src");
+    if (!src_current) {
+        std::filesystem::create_directory("src");
+        std::ofstream main_file("src/main.cpp");
+        std::string main_content = R"(#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!\n";
+})";
+        main_file << main_content;
+    } else {
+        bool main_current = std::filesystem::exists("src/main.cpp");
+        if (!main_current) {
+            std::ofstream main_file("src/main.cpp");
+            std::string main_content = R"(#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!\n";
+})";
+            main_file << main_content;
+        }
+    }
+    std::cout << COLOUR_CYAN_B
+        << "Project created."
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
+}
+
 void PufferMake::Maker::PreProcess() {
     std::cout 
-        << COLOUR_YELLOW_B << "Starting preprocess..." 
+        << COLOUR_YELLOW_B << "Starting to generate preprocessed files..." 
         << COLOUR_RESET << std::endl;
     bool preprocessed_current = std::filesystem::exists("./preprocessed");
     if (!preprocessed_current) {
@@ -100,7 +138,10 @@ void PufferMake::Maker::PreProcess() {
     for (auto& f : futures) {
         f.wait();
     }
-    std::cout << "Finished preprocessing" << std::endl;
+    std::cout << COLOUR_YELLOW_B 
+        << "Finished generating preprocessed files." 
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
 }
 
 void PufferMake::Maker::Compile() {
@@ -141,14 +182,16 @@ void PufferMake::Maker::Compile() {
         m_object_files.TryAddFile(current_path);
     }
 
-    std::cout << "Finished compiling." << std::endl;
+    std::cout << COLOUR_BLUE_B
+        << "Finished compiling."
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
 }
 
 void PufferMake::Maker::LinkExecutable() {
     std::cout 
         << COLOUR_MAGENTA_B << "Starting linking for executable..." 
         << COLOUR_RESET << std::endl;
-
 
     // g++ objects/main.o objects/FileList.o objects/Configuration.o objects/ParseCommand.o objects/Maker.o -o ./target/app -lstdc++fs
     auto temp_file_name_list = m_object_files.RetrieveFileList();
@@ -158,6 +201,33 @@ void PufferMake::Maker::LinkExecutable() {
         std::string converted(name.begin(), name.end());
         command << '\"' << converted << "\" ";
     }
+
+    auto static_libs = m_config.StaticLinking();
+    if (static_libs.active) {
+        std::vector<std::string> static_files;
+        std::set<std::string> skips;
+        for (auto path : static_libs.directories) {
+            for (auto filename : static_libs.files) {
+                if (skips.count(filename) != 0) {
+                    continue;
+                }
+                std::string fullpath = path;
+                if (path.find_last_of('/') != path.length() - 1
+                    || path.find_last_of('\\') != path.length() - 1) {
+                    fullpath += '/';
+                }
+                fullpath += filename;
+                bool filecurrent = std::filesystem::exists(fullpath);
+                if (filecurrent) {
+                    skips.emplace(filename);
+                    static_files.push_back(fullpath);
+                }
+            }
+        }
+        for (auto file :static_files) {
+            command << '\"' << file << "\" ";
+        }
+    }
     
     command << "-o ./target/";
     auto build_name = m_config.BuildName();
@@ -166,23 +236,159 @@ void PufferMake::Maker::LinkExecutable() {
     } else {
         command << "app";
     }
+
+    auto dynamic_libs = m_config.DynamicLinking();
+    if (dynamic_libs.active) {
+        command << ' ';
+        for (auto path : dynamic_libs.directories) {
+            command << "-L\"" << path << "\" ";
+        }
+
+        for (auto filename : dynamic_libs.files) {
+            auto libpos = filename.find_first_of("lib");
+            auto sopos = filename.find_last_of(".so");
+            std::string fname = filename;
+            if (libpos == 0) {
+                fname = fname.substr(3, fname.length() - 3);
+            }
+            if (sopos != std::string::npos) {
+                fname = fname.substr(0, fname.length() - 3);
+            }
+            command << "-l" << fname << ' ';
+        }
+    }
+
     bool target_folder_current = std::filesystem::exists("./target");
     if (!target_folder_current) {
         std::filesystem::create_directory("./target");
     }
     std::string result = RunProcess(command.str().data());
 
-    std::cout << "Finished linking for executable." << std::endl;
+    std::cout << COLOUR_MAGENTA_B
+        << "Finished linking for executable." 
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
 }
 
 void PufferMake::Maker::LinkShared() {
+    std::cout 
+        << COLOUR_MAGENTA_B << "Starting linking for shared library..." 
+        << COLOUR_RESET << std::endl;
 
+    auto temp_file_name_list = m_object_files.RetrieveFileList();
+    std::stringstream command;
+    command << "g++ -shared ";
+    for (auto name : temp_file_name_list) {
+        std::string converted(name.begin(), name.end());
+        command << '\"' << converted << "\" ";
+    }
+
+    auto static_libs = m_config.StaticLinking();
+    if (static_libs.active) {
+        std::vector<std::string> static_files;
+        std::set<std::string> skips;
+        for (auto path : static_libs.directories) {
+            for (auto filename : static_libs.files) {
+                if (skips.count(filename) != 0) {
+                    continue;
+                }
+                std::string fullpath = path;
+                if (path.find_last_of('/') != path.length() - 1
+                    || path.find_last_of('\\') != path.length() - 1) {
+                    fullpath += '/';
+                }
+                fullpath += filename;
+                bool filecurrent = std::filesystem::exists(fullpath);
+                if (filecurrent) {
+                    skips.emplace(filename);
+                    static_files.push_back(fullpath);
+                }
+            }
+        }
+        for (auto file :static_files) {
+            command << '\"' << file << "\" ";
+        }
+    }
+    
+    command << "-o ./target/";
+    auto build_name = m_config.BuildName();
+    if (build_name.length() != 0) {
+        command << "lib" << build_name << ".so";
+    } else {
+        command << "app";
+    }
+
+    auto dynamic_libs = m_config.DynamicLinking();
+    if (dynamic_libs.active) {
+        command << ' ';
+        for (auto path : dynamic_libs.directories) {
+            command << "-L\"" << path << "\" ";
+        }
+
+        for (auto filename : dynamic_libs.files) {
+            auto libpos = filename.find_first_of("lib");
+            auto sopos = filename.find_last_of(".so");
+            std::string fname = filename;
+            if (libpos == 0) {
+                fname = fname.substr(3, fname.length() - 3);
+            }
+            if (sopos != std::string::npos) {
+                fname = fname.substr(0, fname.length() - 3);
+            }
+            command << "-l" << fname << ' ';
+        }
+    }
+
+    bool target_folder_current = std::filesystem::exists("./target");
+    if (!target_folder_current) {
+        std::filesystem::create_directory("./target");
+    }
+    std::string result = RunProcess(command.str().data());
+
+    std::cout << COLOUR_MAGENTA_B
+        << "Finished linking for shared library." 
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
 }
-void PufferMake::Maker::LinkStatic() {
 
+void PufferMake::Maker::LinkStatic() {
+    std::cout 
+        << COLOUR_MAGENTA_B << "Starting linking for static library..." 
+        << COLOUR_RESET << std::endl;
+
+    // ar rcs bin/static/libtq84.a bin/static/add.o bin/static/answer.o
+    auto temp_file_name_list = m_object_files.RetrieveFileList();
+    
+    std::stringstream command;
+    command << "ar rcs ";
+    auto build_name = m_config.BuildName();
+    if (build_name.length() == 0) {
+        command << "./target/libapp.a ";
+    } else {
+        command << "./target/lib" << build_name << ".a ";
+    }
+    for (auto name : temp_file_name_list) {
+        std::string converted(name.begin(), name.end());
+        command << '\"' << converted << "\" ";
+    }
+    
+    bool target_folder_current = std::filesystem::exists("./target");
+    if (!target_folder_current) {
+        std::filesystem::create_directory("./target");
+    }
+    std::string result = RunProcess(command.str().data());
+
+    std::cout 
+        << COLOUR_MAGENTA_B
+        << "Finished linking for static library." 
+        << COLOUR_RESET << std::endl
+        << "------------------------" << std::endl;
 }
 
 void PufferMake::Maker::Run() {
+    std::cout 
+        << COLOUR_GREEN_B << "Running executable..." 
+        << COLOUR_RESET << std::endl;
     auto build_type = m_config.BuildType();
     if (build_type != "executable") {
         std::cout
@@ -191,23 +397,31 @@ void PufferMake::Maker::Run() {
             << COLOUR_RESET << std::endl;
         return;
     } 
+    std::filesystem::current_path("./target");
     auto build_name = m_config.BuildName();
-    std::string executable = "./target/";
+    std::string executable = "./";
     executable += build_name;
     auto result = std::system(executable.c_str());
 }
 
 void PufferMake::Maker::Build() {
+    std::cout 
+        << COLOUR_YELLOW_B << "Starting building..." 
+        << COLOUR_RESET << std::endl;
     Compile();
     auto build_type = m_config.BuildType();
     if (build_type == "executable") {
         LinkExecutable();
     } else if (build_type == "shared") {
-
+        LinkShared();
     } else if (build_type == "static") {
-
+        LinkStatic();
+    } else {
+        std::cout 
+            << COLOUR_RED_B
+            << "Please provide a valid build type."
+            << COLOUR_RESET << std::endl;
     }
-    LinkExecutable();
 }
 
 void PufferMake::Maker::BuildAndRun() {
@@ -255,7 +469,7 @@ void PufferMake::Maker::PreProcessFile(std::wstring current_name) {
     std::ofstream outputfile(filename, std::ios::trunc);
     outputfile << result << std::endl;
     std::cout << "Preprocessing of " << converted_str 
-        << " has finished." << std::endl << result << std::endl;
+        << " has finished." << std::endl;
 }
 
 void PufferMake::Maker::CompileFile(std::wstring current_name) {
@@ -271,6 +485,11 @@ void PufferMake::Maker::CompileFile(std::wstring current_name) {
     }
 
     command << "-c ";
+    auto build_type = m_config.BuildType();
+    if (build_type == "shared") {
+        command << "-fPIC ";
+    }
+
     command << '\"' << converted << '\"' << ' ';
     auto includes = m_config.IncludeDirectories();
     for (auto str : includes) {
