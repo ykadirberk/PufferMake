@@ -110,10 +110,10 @@ This file contains the default settings of the project manager. It is not advise
 <h3 style="font-size: 150%">"build.json" file</h3>
 This file contains the build preferences of this project. This is the only file one is allowed to change without an issue.
 
+
 * <b>build-name</b>: This option is the name of the project. This will be used as the name of the built products. It is adviced to use a name with lowercase characters without spaces.
 
 </br>
-
 
 * <b>build-type</b>: This option is the type of this project. Allowed options are:
 
@@ -126,7 +126,7 @@ This file contains the build preferences of this project. This is the only file 
 </br>
 
 
-* <b>cpp-version</b>: C++ standard selection. It allows any keyword that is allowed after "-std=". [For more information.]()
+* <b>cpp-version</b>: C++ standard selection. It allows any keyword that is allowed after "-std=". [For more information.](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
 
 </br>
 
