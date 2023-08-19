@@ -1,6 +1,6 @@
 <div style="text-align: center;">
-    <div style="font-size: 300%;">PufferMake</div>
-    <p>Visual Studio Code-integrated project management tool for linux g++</p>
+    <h1 style="font-size: 300%; text-align: center;">PufferMake<p>Visual Studio Code-integrated project management tool for linux g++</p></h1>
+    
     <h1></h1>
 </div>
 <div>
