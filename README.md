@@ -182,42 +182,72 @@ These are the commands that the PufferMake allows calling. There will be no need
 ```
 These commands are used to create the project. The first command that should be used.
 
+
 ---
+
 
 ```bash
 ./PufferMake preprocess
 ```
 This command generates the results after applying the preprocessor macros to all the source files in preprocessed folder.
 
+
+---
+
+
 ```bash
 ./PufferMake compile
 ```
 This command compiles all source files and generates results in objects folder.
+
+
+---
+
 
 ```bash
 ./PufferMake link-executable
 ```
 This command links object files with specified build options as an executable. It is not advised to call any link command explicitly, other than the one specified in build.json, since it might not work as intended. It is better to call build or build-run.
 
+
+---
+
+
 ```bash
 ./PufferMake link-shared
 ```
 This command links object files with specified build options as a shared library. It is not advised to call any link command explicitly, other than the one specified in build.json, since it might not work as intended. It is better to call build or build-run.
+
+
+---
+
 
 ```bash
 ./PufferMake link-static
 ```
 This command links object files with specified build options as a static library. It is not advised to call any link command explicitly, other than the build-type specified in build.json, since it might not work as intended. It is better to call build or build-run.
 
+
+---
+
+
 ```bash
 ./PufferMake run
 ```
 This command runs the executable that is in the target folder. It will not run any executable if the specified build-type is static or shared.
 
+
+---
+
+
 ```bash
 ./PufferMake build
 ```
 This command builds the project with specified instructions in build.json and generates the result in target folder. It calls <b>compile</b> and <b>link</b> operations sequentially.
+
+
+---
+
 
 ```bash
 ./PufferMake build-run
