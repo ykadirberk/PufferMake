@@ -174,7 +174,11 @@ This file contains the build preferences of this project. This is the only file 
 
 <h2 style="font-size: 250%">Allowed Commands</h2>
 
-These are the commands that the PufferMake allows calling. There will be no need to think about them if you are using Visual Studio Code. If you are not, it is advised to use only the create and build commands.
+These are the commands that the PufferMake allows calling. There will be no need to think about them if you are using Visual Studio Code because you can run these tasks by doing these:
+```
+Terminal >> Run Task... >> Build
+```
+If you are not using Visual Studio Code, it is advised to use only the create and build commands that are described below.
 
 ```bash
 ./PufferMake
