@@ -182,6 +182,8 @@ These are the commands that the PufferMake allows calling. There will be no need
 ```
 These commands are used to create the project. The first command that should be used.
 
+---
+
 ```bash
 ./PufferMake preprocess
 ```
