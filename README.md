@@ -1,6 +1,6 @@
 <div style="text-align: center;">
-    <h1 style="font-size: 300%; text-align: center;">PufferMake<p>Visual Studio Code-integrated project management tool for linux g++</p></h1>
-    
+    <h1 style="font-size: 300%; text-align: center;">PufferMake</h1>
+    <p>A project management tool integrated with Visual Studio Code that is aimed for C++ projects made on linux.</p>
     <h1></h1>
 </div>
 <div>
@@ -8,7 +8,7 @@
         This project is aimed to make the C++ project development experience on linux to feel more like a Visual Studio project. It achieves that simplicity by making use of tasks in Visual Studio Code and creating a new project structure.
     </p>
     </br>
-    <h1 style="font-size: 250%">Initialization</h1>
+    <h2 style="font-size: 250%">Initialization</h1>
     <p>There are three ways to start using <b style="color: blue;">PufferMake</b>.</p>
     <ul>
         <li>Building using Visual Studio Code tasks.</li>
@@ -16,7 +16,7 @@
         <li>Using the released pre-built binary.</li>
     </ul>
     </br>
-    <h1 style="font-size: 150%">Building using Visual Studio Code tasks</h1>
+    <h3 style="font-size: 150%">Building using Visual Studio Code tasks</h3>
     <p>Download this project and extract it to a folder. Open this folder in Visual Studio Code. At the top menu, go to: </p>
 </div>
 
@@ -27,7 +27,7 @@ Terminal >> Run Task... >> Build
 <div>
      <p>This will open a new terminal window on Visual Studio Code and run compilation and linking processes. The binary file will be in the <b>target</b> folder.</p>
      </br>
-     <h1 style="font-size: 150%">Building using Terminal commands</h1>
+     <h3 style="font-size: 150%">Building using Terminal commands</h3>
      <p>Download this project and extract it to a folder. Open this folder in terminal and run these terminal commands in the given order.</p>
 </div>
 
@@ -50,10 +50,10 @@ g++ objects/main.o objects/FileList.o objects/Configuration.o objects/ParseComma
 <div>
     <p> The binary file will be in the <b>target</b> folder.</p>
     </br>
-    <h1 style="font-size: 150%">Using the released pre-built binary.</h1>
+    <h3 style="font-size: 150%">Using the released pre-built binary.</h3>
     <p>Download the latest release or, for the bleeding edge executable, use the executable in the <b>target</b> folder.</p>
     </br>
-    <h1 style="font-size: 250%">Creating the First Project</h1>
+    <h2 style="font-size: 250%">Creating the First Project</h2>
     <p>Move the binary named <b style="color: blue;">PufferMake</b> to the folder that you want to create your project in and run one of these commands in that folder. Both does the same thing.</p>
 </div>
 
