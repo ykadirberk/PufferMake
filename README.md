@@ -75,15 +75,15 @@ build.json                          -file
 defaults.json                       -file
 ```
 </br>
-<h1 style="font-size: 150%">".vscode" Folder and "tasks.json" file</h1>
+<h3 style="font-size: 150%">".vscode" Folder and "tasks.json" file</h3>
 You should not be changing this folder and its contents manually if you don't know what you are doing. It should provide necessary tasks for <b style="color: blue;">PufferMake</b> to operate and should work as it is.
 </br>
 </br>
-<h1 style="font-size: 150%">"objects" Folder</h1>
+<h3 style="font-size: 150%">"objects" Folder</h3>
 This folder will contain the object files that are created after the compilation.
 </br>
 </br>
-<h1 style="font-size: 150%">"target" Folder</h1>
+<h3 style="font-size: 150%">"target" Folder</h3>
 This folder will contain the result of build/link operations. 
 <li>If the build type is <b>executable</b> then the result's name will be <b style="color: rgb(50, 170, 70);">app</b> by default.</li>
 <li>If the build type is <b>shared</b> then the result's name will be <b style="color: rgb(50, 170, 70);">libapp.so</b> by default.</li>
@@ -91,11 +91,11 @@ This folder will contain the result of build/link operations.
 This name can be changed in <b>build.json</b> file.
 </br>
 </br>
-<h1 style="font-size: 150%">"src" Folder</h1>
+<h3 style="font-size: 150%">"src" Folder</h3>
 This folder will contain files of the project, It comes with an hello world application (main.cpp) as default.
 </br>
 </br>
-<h1 style="font-size: 150%">"defaults.json" file</h1>
+<h3 style="font-size: 150%">"defaults.json" file</h3>
 This file contains the default settings of the project manager. It is not advised to change any of the values in this file. 
 <li><b>vs-code_integration</b>: This option comes true as default and generates the ".vscode" folder if it does not exist. Changing this field into false will not have an effect unless the ".vscode" folder is deleted.</li>
 <li><b>source_file_filters</b>: The list of file extensions that will be recognized as source files.</li>
@@ -104,21 +104,19 @@ This file contains the default settings of the project manager. It is not advise
 <li><b>preprocessed_file_filters</b>: The list of file extensions that will be recognized as preprocessed files.</li>
 <li><b>staticlib_file_filters</b>: The list of file extensions that will be recognized as static library files.</li>
 <li><b>dynamiclib_file_filters</b>: The list of file extensions that will be recognized as dynamic library files.</li>
-<li><b>comments</b>: Fields of this json object does not affect anything, They are merely instructions that will also be explained here in detail<./li>
+<li><b>comments</b>: Fields of this json object does not affect anything, They are merely instructions that will also be explained here in detail</li>
 </br>
 </br>
-<h1 style="font-size: 150%">"build.json" file</h1>
+<h3 style="font-size: 150%">"build.json" file</h3>
 This file contains the build preferences of this project. This is the only file one is allowed to change without an issue.
-<li>
-<b>build-name</b>: This option is the name of the project. This will be used as the name of the built products. It is adviced to use a name with lowercase characters without spaces.
-</li>
-<li>
-<b>build-type</b>: This option is the type of this project. Allowed options are:
-<li style="margin-left: 5%;"><b>executable</b></li>
-<li style="margin-left: 10%;">The built product's name will be the same as the specified "{build-name}". As the default, the name should be <b style="color: rgb(50, 170, 70);">app</b></li>
-<li style="margin-left: 5%;"><b>shared</b></li>
-<li style="margin-left: 10%;">The built product's name will be in this format "lib{build-name}.so". As the default, the name should be lib<b style="color: rgb(50, 170, 70);">app</b>.so</li>
-<li style="margin-left: 5%;"><b>static</b></li>
-<li style="margin-left: 10%;">The built product's name will be in this format "lib{build-name}.a". As the default, the name should be lib<b style="color: rgb(50, 170, 70);">app</b>.a</li>
-</li>
-</br>
+
+* <b>build-name</b>: This option is the name of the project. This will be used as the name of the built products. It is adviced to use a name with lowercase characters without spaces.
+
+
+* <b>build-type</b>: This option is the type of this project. Allowed options are:
+
+    * <b>executable</b>: This option allows building a standalone executable file. The built product's name will be the same as the specified "{build-name}". As the default, the name should be "<b>app</b>".
+
+    * <b>shared</b>: This option allows building a shared library. The built product's name will be in this format "lib{build-name}.so". As the default, the name should be "lib<b>app</b>.so".
+
+    * <b>static</b>: The built product's name will be in this format "lib{build-name}.a". As the default, the name should be "lib<b>app</b>.a".
