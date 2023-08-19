@@ -112,6 +112,8 @@ This file contains the build preferences of this project. This is the only file 
 
 * <b>build-name</b>: This option is the name of the project. This will be used as the name of the built products. It is adviced to use a name with lowercase characters without spaces.
 
+</br>
+
 
 * <b>build-type</b>: This option is the type of this project. Allowed options are:
 
@@ -120,3 +122,50 @@ This file contains the build preferences of this project. This is the only file 
     * <b>shared</b>: This option allows building a shared library. The built product's name will be in this format "lib{build-name}.so". As the default, the name should be "lib<b>app</b>.so".
 
     * <b>static</b>: The built product's name will be in this format "lib{build-name}.a". As the default, the name should be "lib<b>app</b>.a".
+
+</br>
+
+
+* <b>cpp-version</b>: C++ standard selection. It allows any keyword that is allowed after "-std=". [For more information.]()
+
+</br>
+
+
+* <b>warnings</b>: This option allows 3 different keywords. <b>disabled</b> option disables all warnings, uses "-w" gcc option. <b>all</b> option enables all warnings, uses "-Wall" option. <b>extra</b> option enables warnings that are not enabled by <b>all</b> keyword, uses "-Wextra" option.
+
+</br>
+
+
+* <b>optimization</b>: This object is reserved for optimization but allows any compiler option. However, it is only advised to use this option to specify optimization options ([For more information](https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Optimize-Options.html)). Changing active option into false will disable optimization options. Recommended options are:
+
+    * <b>O0</b> : Optimize for compilation time.
+    * <b>O1</b>, <b>O</b> : Optimize for code size and execution time.
+    * <b>O2</b> : Optimize for code size and more execution time.
+    * <b>O3</b> : Optimize for code size and more(+) execution time.
+    * <b>Os</b> : Optimize for code size.
+    * <b>Ofast</b> : Same as -O3 with fast non-accurate math (aggressive speed optimization)
+    * <b>Og</b> : Optimize for debugging experience.
+    * <b>Oz</b> : Aggressive optimization for code size rather speed.
+
+</br>
+
+* <b>debug</b>: This object is reserved for debug but allows any compiler option. However, it is only advised to use this option to specify debug options ([For more information](https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Debugging-Options.html)). Changing active option into false will disable debug options. Recommended options are:
+
+    * <b>g0</b> : No debug information.
+    * <b>g1</b> : Minimal debug information.
+    * <b>g</b> : Default debug information.
+    * <b>g3</b> : Maximal debug information.
+    * <b>ggdb</b> : Use most expressive information format that will ease gdb usage.
+    * <b>gdwarf</b> : Produce debug information in DWARF format.
+
+</br>
+
+* <b>include-directories</b>: This is a list that specifies additional include directories.
+
+</br>
+
+* <b>static-linking</b>: When active option is true, it searches for <b>files</b> specified in <b>directories</b> and adds these libraries in linking process.
+
+</br>
+
+* <b>dynamic-linking</b>: When active option is true, it puts options that indicate <b>files</b> specified in <b>directories</b>.
