@@ -60,7 +60,7 @@ int main (int argc, char* argv[]) {
 /* 
 run commands:
 
-g++ -c src/main.cpp src/FileList/FileList.cpp src/nlohmann/json.hpp src/Configuration/Configuration.cpp -std=c++20 -Os
+g++ -c src/main.cpp src/FileList/FileList.cpp src/Configuration/Configuration.cpp -std=c++20 -Os
 g++ main.o FileList.o json.o Configuration.o -o ./target/app -lstdc++fs
 ./target/app
 
