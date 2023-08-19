@@ -176,15 +176,19 @@ This file contains the build preferences of this project. This is the only file 
 
 These are the commands that the PufferMake allows calling. There will be no need to think about them if you are using Visual Studio Code because you can run these tasks by doing these:
 ```
-Terminal >> Run Task... >> Build
+Terminal >> Run Task...
 ```
 If you are not using Visual Studio Code, it is advised to use only the create and build commands that are described below.
+
+
+---
+
 
 ```bash
 ./PufferMake
 ./PufferMake create
 ```
-These commands are used to create the project. The first command that should be used.
+These commands are used to create the project. The first command that should be used after optaining PufferMake.
 
 
 ---
